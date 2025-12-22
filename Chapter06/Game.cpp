@@ -14,7 +14,12 @@
 #include "MeshComponent.h"
 #include "CameraActor.h"
 #include "PlaneActor.h"
-
+#include <assimp/Importer.hpp>      // C++ importer interface
+#include <assimp/scene.h>           // Output data structure
+#include <assimp/postprocess.h>     // Post processing flags
+#include "StaticModel.h"
+#include <iostream>
+using namespace std;
 Game::Game()
 :mRenderer(nullptr)
 ,mIsRunning(true)
@@ -137,7 +142,13 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	// Create actors
+        StaticModel house;
+	house.LoadModel("Assets/dino.gltf");
+	cout << "Dino loaded\n";
+	  
+
+	
+        // Create actors
 	Actor* a = new Actor(this);
 	a->SetPosition(Vector3(200.0f, 75.0f, 0.0f));
 	a->SetScale(100.0f);
@@ -153,6 +164,14 @@ void Game::LoadData()
 	mc = new MeshComponent(a);
 	mc->SetMesh(mRenderer->GetMesh("Assets/Sphere.gpmesh"));
 
+	
+	a = new Actor(this);
+	a->SetPosition(Vector3(300.0f, -75.0f, 0.0f));
+	a->SetScale(4.0f);
+
+
+	
+	
 	// Setup floor
 	const float start = -1250.0f;
 	const float size = 250.0f;
@@ -212,6 +231,7 @@ void Game::LoadData()
 	a->SetScale(0.75f);
 	sc = new SpriteComponent(a);
 	sc->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
+
 }
 
 void Game::UnloadData()
