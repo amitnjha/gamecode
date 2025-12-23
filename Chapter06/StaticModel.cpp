@@ -3,6 +3,7 @@
 #include <assimp/postprocess.h>
 #include "StaticModel.h"
 #include "StaticMesh.h"
+#include <iostream>
 
 //class StaticModel {
 //public:
@@ -14,13 +15,18 @@ void StaticModel::LoadModel(std::string const &path) {
         // Optimization: aiProcess_PreTransformVertices can bake scales/rotations directly
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenSmoothNormals);
 
-        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) return;
+        if(!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
+	  std:: cout << "model load failed " << importer.GetErrorString() << "\n";
+	  return;
+	}
         
         directory = path.substr(0, path.find_last_of('/'));
         processNode(scene->mRootNode, scene);
     }
 
 void StaticModel::Draw(unsigned int shaderID) {
+  //  std::cout<< "In draw " << meshes.size() << "\n";
+	
         for(auto &mesh : meshes) mesh.Draw(shaderID);
     }
 

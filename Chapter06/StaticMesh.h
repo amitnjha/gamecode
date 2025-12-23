@@ -8,7 +8,7 @@ struct StaticVertex {
     glm::vec2 TexCoords;
 };
 
-struct Texture {
+struct StaticTexture {
     unsigned int id;
     std::string type; // e.g., "texture_diffuse"
     std::string path;
@@ -17,10 +17,10 @@ class StaticMesh {
  public:
    std::vector<StaticVertex> vertices;
    std::vector<unsigned int> indices;
-   std::vector<Texture> textures;
+   std::vector<StaticTexture> textures;
    unsigned int VAO;
 
-   StaticMesh(std::vector<StaticVertex> v, std::vector<unsigned int> i, std::vector<Texture> t) ;
+   StaticMesh(std::vector<StaticVertex> v, std::vector<unsigned int> i, std::vector<StaticTexture> t) ;
     
    void Draw(unsigned int shaderID);
 private:

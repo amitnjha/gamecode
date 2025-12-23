@@ -115,7 +115,7 @@ void Renderer::UnloadData()
 	mMeshes.clear();
 }
 
-void Renderer::Draw()
+void Renderer::Draw(class StaticModel house, unsigned int ID)
 {
 	// Set the clear color to light grey
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -137,6 +137,7 @@ void Renderer::Draw()
 		mc->Draw(mMeshShader);
 	}
 
+	
 	// Draw all sprite components
 	// Disable depth buffering
 	glDisable(GL_DEPTH_TEST);
@@ -152,7 +153,7 @@ void Renderer::Draw()
 	{
 		sprite->Draw(mSpriteShader);
 	}
-
+	house.Draw(ID);
 	// Swap the buffers
 	SDL_GL_SwapWindow(mWindow);
 }

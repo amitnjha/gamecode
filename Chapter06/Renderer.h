@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <SDL2/SDL.h>
 #include "Math.h"
+#include "StaticModel.h"
 
 struct DirectionalLight
 {
@@ -33,7 +34,7 @@ public:
 	void Shutdown();
 	void UnloadData();
 
-	void Draw();
+  void Draw(class StaticModel house, unsigned int ID);
 
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);

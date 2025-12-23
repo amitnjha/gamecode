@@ -24,7 +24,7 @@ struct Texture {
 //    std::vector<Texture> textures;
 //    unsigned int VAO;
 
-StaticMesh::StaticMesh(std::vector<StaticVertex> v, std::vector<unsigned int> i, std::vector<Texture> t) 
+StaticMesh::StaticMesh(std::vector<StaticVertex> v, std::vector<unsigned int> i, std::vector<StaticTexture> t) 
         : vertices(v), indices(i), textures(t) {
         setupMesh();
     }

@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 #include "Math.h"
+#include "StaticModel.h"
+#include "Shader.h"
 
 class Game
 {
@@ -23,6 +25,8 @@ public:
 
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
+        StaticModel house;
+        Shader *modelShader;
 
 	class Renderer* GetRenderer() { return mRenderer; }
 private:

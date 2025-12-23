@@ -12,7 +12,7 @@ mkdir -p ~/Desktop/Games/$game/Shaders
 
 #cd ../$chapter
 
-g++ -o ~/Desktop/Games/$game/$game *.cpp `sdl2-config --cflags --libs` -lGLEW -lGL -lSOIL -lassimp
+g++ -o ~/Desktop/Games/$game/$game *.cpp `sdl2-config --cflags --libs` -lGLEW -lGL -lSOIL -lassimp -I/usr/local/include/assimp/
 
 cp -rf Assets/* ~/Desktop/Games/$game/Assets/
 

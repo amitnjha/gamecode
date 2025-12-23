@@ -10,7 +10,8 @@
 #include <GL/glew.h>
 #include <string>
 #include "Math.h"
-
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 class Shader
 {
 public:
@@ -27,6 +28,14 @@ public:
 	void SetVectorUniform(const char* name, const Vector3& vector);
 	// Sets a float uniform
 	void SetFloatUniform(const char* name, float value);
+        Shader(const char* vertexPath, const char* fragmentPath);
+               // Activation
+       void Use() { glUseProgram(ID); }
+       // Uniform utilities
+       void SetMatrix4(const std::string& name, const glm::mat4& mat) const {
+        glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(mat));
+       }
+       unsigned int ID;
 private:
 	// Tries to compile the specified shader
 	bool CompileShader(const std::string& fileName,
@@ -37,9 +46,19 @@ private:
 	bool IsCompiled(GLuint shader);
 	// Tests whether vertex/fragment programs link
 	bool IsValidProgram();
+
+        
+
+       // Constructor: Reads and builds the shader from file paths
+       
+    
+
+       
 private:
 	// Store the shader object IDs
 	GLuint mVertexShader;
 	GLuint mFragShader;
 	GLuint mShaderProgram;
+
+  
 };

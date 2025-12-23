@@ -19,6 +19,8 @@
 #include <assimp/postprocess.h>     // Post processing flags
 #include "StaticModel.h"
 #include <iostream>
+#include "Shader.h"
+
 using namespace std;
 Game::Game()
 :mRenderer(nullptr)
@@ -137,16 +139,31 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	mRenderer->Draw();
+	
+    // 2. Set up the Model Matrix (Position, Rotation, Scale)
+    glm::mat4 modelMatrix = glm::mat4(1.0f);
+    modelMatrix = glm::translate(modelMatrix, glm::vec3(0.0f, 0.0f, -5.0f)); 
+    modelMatrix = glm::scale(modelMatrix, glm::vec3(0.5f)); // Adjust scale for Blender models
+    
+    // 3. Pass the matrix to the shader
+    modelShader->SetMatrix4("model", modelMatrix);
+
+    // 4. Draw the static model
+    house.Draw(modelShader->ID);
+
+    mRenderer->Draw(house, modelShader->ID);
+    modelShader->Use();
+
 }
 
 void Game::LoadData()
 {
-        StaticModel house;
-	house.LoadModel("Assets/dino.gltf");
+  //StaticModel house;
+	house.LoadModel("Assets/poopbox1.glb");
 	cout << "Dino loaded\n";
-	  
 
+        modelShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
+	
 	
         // Create actors
 	Actor* a = new Actor(this);

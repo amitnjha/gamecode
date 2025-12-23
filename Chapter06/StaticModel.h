@@ -1,6 +1,7 @@
 #include "StaticMesh.h"
 #ifndef STATICMODEL_H  // Header guards prevent multiple inclusions
 #define STATICMODEL_H
+#include <assimp/scene.h>
 
 class StaticModel {
  public:
