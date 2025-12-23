@@ -35,11 +35,18 @@ class FullscreenApp(Gtk.Application):
         for index in range(0, dirlen, 2):
             buttonPong = Gtk.Button(label=dirs[index])
             buttonPong.connect("clicked", self.on_button_clicked)
+            image = Gtk.Image(file= "/home/aaryan/git/gamecode/consoleapp/"+dirs[index]+'.png');
+            buttonPong.set_child(image);
+            buttonPong.set_size_request(200, 100)
             buttonPong._value = dirs[index]
 
             if index+1 < dirlen:
                 buttonPong1 = Gtk.Button(label=dirs[index+1])
                 buttonPong1.connect("clicked", self.on_button_clicked)
+                image = Gtk.Image(file= "/home/aaryan/git/gamecode/consoleapp/"+dirs[index+1]+'.png');
+                buttonPong1.set_size_request(200, 100)
+                buttonPong1.set_child(image);
+                
                 buttonPong1._value = dirs[index+1]
             
             main_box.attach(buttonPong,  index/2, 0, 1, 1) # Col 0, Row 0, spans 1 col and 1 row
