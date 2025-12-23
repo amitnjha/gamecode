@@ -8,18 +8,22 @@
 
 #pragma once
 #include "Actor.h"
-#include <cstdint>
 #include "SDL2/SDL.h"
-class Ship : public Actor
+#include <cstdint>
+class Enemy : public Actor
 {
 public:
-	Ship(class Game* game);
+  Enemy(class Game* game, int index);
 	void UpdateActor(float deltaTime) override;
 	void ProcessKeyboard(const uint8_t* state);
 	float GetRightSpeed() const { return mRightSpeed; }
 	float GetDownSpeed() const { return mDownSpeed; }
-  void ProcessJoyStick(Sint16 axis_value1, Sint16 axis_value2,Sint16 down_value1, Sint16 down_valu2);
+        
 private:
 	float mRightSpeed;
 	float mDownSpeed;
+        float mTotalTime;
+        int mIndex;
+        int mAmplitude;
+        int mFrequency;
 };

@@ -20,6 +20,8 @@ public:
 	void RunLoop();
 	void Shutdown();
 
+        void AddEnemy(class Enemy* enemy);
+  
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
@@ -33,12 +35,16 @@ private:
 	void GenerateOutput();
 	void LoadData();
 	void UnloadData();
+        SDL_Joystick *joystick0;
+        SDL_Joystick *joystick1;
 	
 	// Map of textures loaded
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
 	// All the actors in the game
 	std::vector<class Actor*> mActors;
+
+        std::vector<class Enemy*> mEnemies;
 	// Any pending actors
 	std::vector<class Actor*> mPendingActors;
 

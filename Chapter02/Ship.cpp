@@ -9,6 +9,9 @@
 #include "Ship.h"
 #include "AnimSpriteComponent.h"
 #include "Game.h"
+#include <iostream>
+
+using namespace std;
 
 Ship::Ship(Game* game)
 	:Actor(game)
@@ -51,6 +54,32 @@ void Ship::UpdateActor(float deltaTime)
 		pos.y = 743.0f;
 	}
 	SetPosition(pos);
+}
+
+void Ship::ProcessJoyStick(Sint16 axis_value1, Sint16 axis_value2, Sint16 down_value1, Sint16 down_value2){
+
+  mRightSpeed = 0.0f;
+  mDownSpeed = 0.0f;
+	
+  if ((axis_value1 < -8000 || axis_value1 > 8000) || (axis_value2 < -8000 || axis_value2 > 8000)) {
+    if (axis_value1 < -8000 || axis_value2 < -8000 ){
+      //cout << "negating" << "\n";
+      mDownSpeed -= 300.0f;
+    }else{
+      mDownSpeed += 300.0f;
+      //cout << "increasing" << "\n";
+    }
+  }else if((down_value1 < -8000 || down_value1 > 8000) || (down_value2 < -8000 || down_value2 > 8000)) {
+    if (down_value1 < -8000 || down_value2 < -8000 ){
+      //cout << "negating" << "\n";
+      mRightSpeed -= 300.0f;
+    }else{
+      mRightSpeed += 300.0f;
+      //cout << "increasing" << "\n";
+    }
+    
+  }
+  
 }
 
 void Ship::ProcessKeyboard(const uint8_t* state)

@@ -13,6 +13,15 @@
 #include "SpriteComponent.h"
 #include "Ship.h"
 #include "BGSpriteComponent.h"
+#include "AnimSpriteComponent.h"
+#include "Enemy.h"
+#include <iostream>
+#include <cmath>
+
+using namespace std;
+
+const float WIDTH = 1920;
+const float HEIGHT = 1000;
 
 Game::Game()
 :mWindow(nullptr)
@@ -25,13 +34,13 @@ Game::Game()
 
 bool Game::Initialize()
 {
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK) != 0)
 	{
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
-	
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 2)", 100, 100, 1024, 768, 0);
+	printf("%i joysticks were found.\n\n", SDL_NumJoysticks() );
+	mWindow = SDL_CreateWindow("Aaryan's SpaceShip", 10, 10, WIDTH, HEIGHT, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -50,6 +59,10 @@ bool Game::Initialize()
 		SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
 		return false;
 	}
+	SDL_JoystickEventState(SDL_ENABLE);
+        joystick0 = SDL_JoystickOpen(0);
+	joystick1 = SDL_JoystickOpen(1);
+	
 
 	LoadData();
 
@@ -78,6 +91,17 @@ void Game::ProcessInput()
 			case SDL_QUIT:
 				mIsRunning = false;
 				break;
+			case SDL_JOYAXISMOTION:
+			  Sint16 axis_value1 = SDL_JoystickGetAxis(joystick1, 1);
+			  Sint16 axis_value2 = SDL_JoystickGetAxis(joystick0, 1);
+
+			  Sint16 down_value1 = SDL_JoystickGetAxis(joystick1, 0);
+			  Sint16 down_value2 = SDL_JoystickGetAxis(joystick0, 0);
+
+			  //cout << axis_value1 << "  " << axis_value2 << "\n";
+			  mShip->ProcessJoyStick(axis_value1, axis_value2, down_value1, down_value2);
+			  break;
+			  
 		}
 	}
 	
@@ -88,7 +112,18 @@ void Game::ProcessInput()
 	}
 
 	// Process ship input
-	mShip->ProcessKeyboard(state);
+	//mShip->ProcessKeyboard(state);
+	
+}
+
+bool isCollision(Vector2 shipPos, Vector2 enemyPos){
+
+  //cout << shipPos.x << " "  << shipPos.y << "\n";
+  //cout << enemyPos.x << " " << enemyPos.y << "\n";
+  
+  if(abs(shipPos.x-enemyPos.x) < 20 &&  abs(shipPos.y-enemyPos.y) < 20 )
+    return true;
+  return false;
 }
 
 void Game::UpdateGame()
@@ -122,20 +157,22 @@ void Game::UpdateGame()
 
 	// Add any dead actors to a temp vector
 	std::vector<Actor*> deadActors;
-	for (auto actor : mActors)
+	Vector2 shipPos = mShip->GetPosition();
+	for (auto enemy : mEnemies)
 	{
-		if (actor->GetState() == Actor::EDead)
-		{
-			deadActors.emplace_back(actor);
-		}
+	
+	    
+	  //check collision
+	  if(isCollision(shipPos, enemy->GetPosition()))
+	    {
+	      mIsRunning = false;
+	      return;
+	    }
+	  
 	}
-
-	// Delete dead actors (which removes them from mActors)
-	for (auto actor : deadActors)
-	{
-		delete actor;
-	}
+	//return false;
 }
+
 
 void Game::GenerateOutput()
 {
@@ -160,10 +197,10 @@ void Game::LoadData()
 
 	// Create actor for the background (this doesn't need a subclass)
 	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(512.0f, 384.0f));
+	temp->SetPosition(Vector2(WIDTH/2, HEIGHT/2));
 	// Create the "far back" background
 	BGSpriteComponent* bg = new BGSpriteComponent(temp);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	bg->SetScreenSize(Vector2(WIDTH, HEIGHT));
 	std::vector<SDL_Texture*> bgtexs = {
 		GetTexture("Assets/Farback01.png"),
 		GetTexture("Assets/Farback02.png")
@@ -172,13 +209,39 @@ void Game::LoadData()
 	bg->SetScrollSpeed(-100.0f);
 	// Create the closer background
 	bg = new BGSpriteComponent(temp, 50);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	bg->SetScreenSize(Vector2(WIDTH, HEIGHT));
 	bgtexs = {
 		GetTexture("Assets/Stars.png"),
 		GetTexture("Assets/Stars.png")
 	};
 	bg->SetBGTextures(bgtexs);
 	bg->SetScrollSpeed(-200.0f);
+
+
+	///enemy ship 5 of them
+	for(int i = 0 ; i < 14; i++){
+	  Enemy* tempEnemy = new Enemy(this,i);
+	  tempEnemy->SetPosition(Vector2(WIDTH-20, HEIGHT-(90*i)));
+	  //tempEnemy->SetIndex(i);
+	  // Create the "far back" background
+	  AnimSpriteComponent* animSpriteComp = new AnimSpriteComponent(tempEnemy);
+	  //animSpriteComp->SetScreenSize(Vector2(WIDTH, HEIGHT));
+	  AddEnemy(tempEnemy);
+	  AddActor(tempEnemy);
+	  AddSprite(animSpriteComp);
+	}
+	//mTextures.push_back(enemyTexs);
+	// Create the closer background
+	//bg = new BGSpriteComponent(temp, 50);
+	//bg->SetScreenSize(Vector2(WIDTH, HEIGHT));
+	//bgtexs = {
+	//	GetTexture("Assets/Stars.png"),
+	//	GetTexture("Assets/Stars.png")
+	//};
+	//bg->SetBGTextures(bgtexs);
+	//bg->SetScrollSpeed(-200.0f);
+
+	
 }
 
 void Game::UnloadData()
@@ -239,6 +302,21 @@ void Game::Shutdown()
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }
+
+
+void Game::AddEnemy(Enemy* enemy)
+{
+	// If we're updating actors, need to add to pending
+	//if (mUpdatingActors)
+	//{
+  //		mPendingActors.emplace_back(actor);
+  //	}
+  //	else
+  //	{
+		mEnemies.emplace_back(enemy);
+		//	}
+}
+
 
 void Game::AddActor(Actor* actor)
 {
