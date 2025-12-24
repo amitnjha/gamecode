@@ -8,6 +8,8 @@
 
 #include "InputComponent.h"
 #include "Actor.h"
+#include <iostream>
+using namespace std;
 
 InputComponent::InputComponent(class Actor* owner)
 :MoveComponent(owner)
@@ -18,6 +20,47 @@ InputComponent::InputComponent(class Actor* owner)
 {
 	
 }
+
+
+void InputComponent::ProcessInput(Sint16 axis_value1, Sint16 axis_value2, Sint16 down_value1, Sint16 down_value2)
+{
+  //cout<< "coming in InputComponent::ProcessInput\n";
+  
+	// Calculate forward speed for MoveComponent
+	float forwardSpeed = 0.0f;
+	float angularSpeed = 0.0f;
+	if ((axis_value1 < -8000 || axis_value1 > 8000) || (axis_value2 < -8000 || axis_value2 > 8000)) {
+          if (axis_value1 < -8000 || axis_value2 < -8000 ){
+      //cout << "negating" << "\n";
+      //mDownSpeed -= 300.0f;
+      forwardSpeed -= mMaxForwardSpeed;
+    }else{
+	    //mDownSpeed += 300.0f;
+      forwardSpeed += mMaxForwardSpeed;
+      //cout << "increasing" << "\n";
+    }
+  }else if((down_value1 < -8000 || down_value1 > 8000) || (down_value2 < -8000 || down_value2 > 8000)) {
+    if (down_value1 < -8000 || down_value2 < -8000 ){
+      //cout << "negating" << "\n";
+      //mRightSpeed -= 300.0f;
+      //forwardSpeed -= mMaxForwardSpeed;
+      angularSpeed -= mMaxAngularSpeed;
+    }else{
+      //mRightSpeed += 300.0f;
+      //forwardSpeed += mMaxForwardSpeed;
+      angularSpeed += mMaxAngularSpeed;
+      //cout << "increasing" << "\n";
+    }
+    
+  }
+	//cout << "forwardSpeed = " << forwardSpeed << "\n";
+    SetForwardSpeed(forwardSpeed);
+    SetAngularSpeed(angularSpeed);
+
+}
+
+
+
 
 void InputComponent::ProcessInput(const uint8_t* keyState)
 {
@@ -32,7 +75,7 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 		forwardSpeed -= mMaxForwardSpeed;
 	}
 	SetForwardSpeed(forwardSpeed);
-
+	
 	// Calculate angular speed for MoveComponent
 	float angularSpeed = 0.0f;
 	if (keyState[mClockwiseKey])

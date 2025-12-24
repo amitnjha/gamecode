@@ -26,13 +26,13 @@ Game::Game()
 
 bool Game::Initialize()
 {
-	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_JOYSTICK) != 0)
 	{
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
 	
-	mWindow = SDL_CreateWindow("Game Programming in C++ (Chapter 3)", 100, 100, 1024, 768, 0);
+	mWindow = SDL_CreateWindow("Aaryan's Astroids and SpaceShip", 100, 100, 1024, 768, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -52,6 +52,10 @@ bool Game::Initialize()
 		return false;
 	}
 
+	SDL_JoystickEventState(SDL_ENABLE);
+        joystick0 = SDL_JoystickOpen(0);
+	joystick1 = SDL_JoystickOpen(1);
+	
 	Random::Init();
 
 	LoadData();
@@ -81,6 +85,36 @@ void Game::ProcessInput()
 			case SDL_QUIT:
 				mIsRunning = false;
 				break;
+			case SDL_JOYBUTTONDOWN:  /* Handle Joystick Button Presses */
+                          if ( event.jbutton.button == 0 ) 
+			  {
+			    mUpdatingActors = true;
+                            for (auto actor : mActors)
+	                    {
+		                 /* code goes here */
+			     actor->ActorInput(true);
+			    }
+			    mUpdatingActors = false;
+                          }
+			  break;	
+		        case SDL_JOYAXISMOTION:
+			  Sint16 axis_value1 = SDL_JoystickGetAxis(joystick1, 1);
+			  Sint16 axis_value2 = SDL_JoystickGetAxis(joystick0, 1);
+
+			  Sint16 down_value1 = SDL_JoystickGetAxis(joystick1, 0);
+			  Sint16 down_value2 = SDL_JoystickGetAxis(joystick0, 0);
+
+			  //cout << axis_value1 << "  " << axis_value2 << "\n";
+
+			  mUpdatingActors = true;
+	                  for (auto actor : mActors)
+	                  {
+		              actor->ProcessJoyStick(axis_value1, axis_value2, down_value1, down_value2);
+	                  }
+	                  mUpdatingActors = false;
+			  
+			  break;
+		        
 		}
 	}
 	
@@ -93,7 +127,8 @@ void Game::ProcessInput()
 	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
-		actor->ProcessInput(keyState);
+	  // TODO how do I make both work?
+	  //	actor->ProcessInput(keyState);
 	}
 	mUpdatingActors = false;
 }

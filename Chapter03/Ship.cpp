@@ -35,6 +35,19 @@ void Ship::UpdateActor(float deltaTime)
 	mLaserCooldown -= deltaTime;
 }
 
+
+void Ship::ActorInput(bool ZeroPressed){
+
+  if(ZeroPressed){
+    		Laser* laser = new Laser(GetGame());
+		laser->SetPosition(GetPosition());
+		laser->SetRotation(GetRotation());
+
+		// Reset laser cooldown (half second)
+		mLaserCooldown = 0.5f;
+  }
+
+}
 void Ship::ActorInput(const uint8_t* keyState)
 {
 	if (keyState[SDL_SCANCODE_SPACE] && mLaserCooldown <= 0.0f)

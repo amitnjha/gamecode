@@ -8,7 +8,7 @@
 
 #pragma once
 #include <cstdint>
-
+#include "SDL2/SDL.h"
 class Component
 {
 public:
@@ -21,7 +21,7 @@ public:
 	virtual void Update(float deltaTime);
 	// Process input for this component
 	virtual void ProcessInput(const uint8_t* keyState) {}
-
+        virtual void ProcessInput(Sint16 axis_value1, Sint16 axis_value2,  Sint16 down_value1,  Sint16 down_value2){}
 	int GetUpdateOrder() const { return mUpdateOrder; }
 protected:
 	// Owning actor

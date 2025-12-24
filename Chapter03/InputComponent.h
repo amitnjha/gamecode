@@ -9,7 +9,7 @@
 #pragma once
 #include "MoveComponent.h"
 #include <cstdint>
-
+#include "SDL2/SDL.h"
 class InputComponent : public MoveComponent
 {
 public:
@@ -17,7 +17,7 @@ public:
 	InputComponent(class Actor* owner);
 
 	void ProcessInput(const uint8_t* keyState) override;
-	
+        void ProcessInput(Sint16 axis_value1, Sint16 axis_value2, Sint16 down_value1, Sint16 down_value2);
 	// Getters/setters for private variables
 	float GetMaxForward() const { return mMaxForwardSpeed; }
 	float GetMaxAngular() const { return mMaxAngularSpeed; }

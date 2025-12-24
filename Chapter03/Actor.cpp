@@ -32,6 +32,7 @@ Actor::~Actor()
 	}
 }
 
+
 void Actor::Update(float deltaTime)
 {
 	if (mState == EActive)
@@ -71,6 +72,11 @@ void Actor::ActorInput(const uint8_t* keyState)
 {
 }
 
+void Actor::ActorInput(bool keyState)
+{
+}
+
+
 void Actor::AddComponent(Component* component)
 {
 	// Find the insertion point in the sorted vector
@@ -99,3 +105,32 @@ void Actor::RemoveComponent(Component* component)
 		mComponents.erase(iter);
 	}
 }
+
+void Actor::ProcessJoyStick(Sint16 axis_value1, Sint16 axis_value2, Sint16 down_value1, Sint16 down_value2){
+
+                for (auto comp : mComponents)
+		{
+			comp->ProcessInput(axis_value1, axis_value2,  down_value1,  down_value2);
+		}
+  
+  /*mRightSpeed = 0.0f;
+  mDownSpeed = 0.0f;
+	
+  if ((axis_value1 < -8000 || axis_value1 > 8000) || (axis_value2 < -8000 || axis_value2 > 8000)) {
+    if (axis_value1 < -8000 || axis_value2 < -8000 ){
+      //cout << "negating" << "\n";
+      mDownSpeed -= 300.0f;
+    }else{
+      mDownSpeed += 300.0f;
+      //cout << "increasing" << "\n";
+    }
+  }else if((down_value1 < -8000 || down_value1 > 8000) || (down_value2 < -8000 || down_value2 > 8000)) {
+    if (down_value1 < -8000 || down_value2 < -8000 ){
+      //cout << "negating" << "\n";
+      mRightSpeed -= 300.0f;
+    }else{
+      mRightSpeed += 300.0f;
+      //cout << "increasing" << "\n";
+    }
+  */
+  }

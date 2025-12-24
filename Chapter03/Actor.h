@@ -10,7 +10,7 @@
 #include <vector>
 #include "Math.h"
 #include <cstdint>
-
+#include "SDL2/SDL.h"
 class Actor
 {
 public:
@@ -33,9 +33,10 @@ public:
 
 	// ProcessInput function called from Game (not overridable)
 	void ProcessInput(const uint8_t* keyState);
+        void ProcessJoyStick(Sint16 axis_value1, Sint16 axis_value2, Sint16 down_value1, Sint16 down_value2);
 	// Any actor-specific input code (overridable)
 	virtual void ActorInput(const uint8_t* keyState);
-
+        virtual void ActorInput(bool keyState);
 	// Getters/setters
 	const Vector2& GetPosition() const { return mPosition; }
 	void SetPosition(const Vector2& pos) { mPosition = pos; }

@@ -15,6 +15,7 @@ public:
 
 	void UpdateActor(float deltaTime) override;
 	void ActorInput(const uint8_t* keyState) override;
+        void ActorInput(bool keyState) override;
 private:
 	float mLaserCooldown;
 };

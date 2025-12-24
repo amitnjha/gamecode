@@ -38,6 +38,8 @@ private:
 	void GenerateOutput();
 	void LoadData();
 	void UnloadData();
+        SDL_Joystick *joystick0;
+        SDL_Joystick *joystick1;
 	
 	// Map of textures loaded
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
